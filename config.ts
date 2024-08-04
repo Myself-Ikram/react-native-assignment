@@ -1,0 +1,1 @@
+export const SERVER = 'https://econceptual-interview-mock.vercel.app'
