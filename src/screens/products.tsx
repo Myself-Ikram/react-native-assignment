@@ -93,45 +93,66 @@ const Products: FC<RootScreenProps> = ({navigation}) => {
         </TouchableOpacity>
       </View>
       {/* List View */}
-      <FlatList
-        data={products}
-        className="p-2"
-        renderItem={({item}) => (
-          <View
-            className="flex-row border border-gray-200 h-36 mb-5 p-3 bg-white"
-            style={{elevation: 5}}>
-            <Image
-              source={{uri: item?.imageUrl}}
-              className="h-full w-1/4 rounded"
-            />
-            <View className="p-2 w-4/5 gap-2">
-              <View>
-                <Text className="text-black font-bold">{item?.name}</Text>
-                <Text className="text-black font-light text-xs">
-                  {item?.description}
-                </Text>
-              </View>
-              <Text className="text-red-500">${item?.price}</Text>
-              <View className="flex-row">
-                {[1, 1, 1, 1, 1].map(item => (
-                  <MaterialIcon size={20} color={'black'} name="star" />
-                ))}
+      {products?.length === 0 ? (
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-lg font-bold">No data</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={products}
+          keyExtractor={item => item?.name}
+          className="p-2"
+          renderItem={({item}) => (
+            <View
+              className="flex-row border border-gray-200 h-36 mb-5 p-3 bg-white"
+              style={{elevation: 5}}>
+              <Image
+                source={{uri: item?.imageUrl}}
+                className="h-full w-1/4 rounded"
+              />
+              <View className="p-2 w-4/5 gap-2">
+                <View>
+                  <Text className="text-black font-bold">{item?.name}</Text>
+                  <Text className="text-black font-light text-xs">
+                    {item?.description}
+                  </Text>
+                </View>
+                <Text className="text-red-500">${item?.price}</Text>
+                <View className="flex-row">
+                  {[1, 1, 1, 1, 1].map((item, idx) => (
+                    <MaterialIcon
+                      key={idx}
+                      size={20}
+                      color={'black'}
+                      name="star"
+                    />
+                  ))}
+                </View>
               </View>
             </View>
-          </View>
-        )}
-      />
+          )}
+        />
+      )}
       {/* Pagination */}
-      <View className="py-5 flex-row justify-around">
+      <View className="flex-row">
         <TouchableOpacity
+          disabled={pageNumber === 1}
+          className={`border border-gray-300 w-1/2 p-5 items-center  ${
+            pageNumber === 1 && 'opacity-25'
+          }`}
           onPress={() => {
             if (pageNumber > 1) {
               setPageNumber(pageNumber - 1);
             }
           }}>
-          <Text className="text-black">Last</Text>
+          <Text className="text-black">Previous</Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => setPageNumber(pageNumber + 1)}>
+        <TouchableOpacity
+          disabled={products?.length === 0}
+          className={`w-1/2 border border-gray-300 p-5 items-center ${
+            products?.length === 0 && 'opacity-25'
+          }`}
+          onPress={() => setPageNumber(pageNumber + 1)}>
           <Text className="text-black">Next</Text>
         </TouchableOpacity>
       </View>

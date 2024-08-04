@@ -14,9 +14,15 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StackParamList} from '../navigation/navigation';
 import {SERVER} from '../../config';
 import Context from '../state_management/context';
+import {Dropdown} from 'react-native-element-dropdown';
 
 type RootScreenProps = NativeStackScreenProps<StackParamList, 'Profile'>;
 
+const countryDropdown = [
+  {label: 'India', value: 'India'},
+  {label: 'China', value: 'China'},
+  {label: 'America', value: 'America'},
+];
 const Profile: FC<RootScreenProps> = ({navigation}) => {
   const {token} = useContext(Context);
   const [user, setUser] = useState({
@@ -126,11 +132,26 @@ const Profile: FC<RootScreenProps> = ({navigation}) => {
         </View>
         <View className="">
           <Text className="text-black font-bold">Country</Text>
-          <TextInput
+          {/* <TextInput
             className="border border-gray-400 rounded-xl  text-black px-2"
             value={user?.country}
             onChangeText={txt => handleChange('country', txt)}
-          />
+          /> */}
+          <View className="p-3 border border-gray-400 rounded-xl">
+            <Dropdown
+              selectedTextStyle={{color: 'black'}}
+              data={countryDropdown}
+              labelField="label"
+              valueField="value"
+              value={countryDropdown.find(i => i?.value === user?.country)}
+              onChange={item => handleChange('country', item?.value)}
+              renderItem={item => (
+                <View className="p-2">
+                  <Text>{item?.value}</Text>
+                </View>
+              )}
+            />
+          </View>
         </View>
       </ScrollView>
       {/* button */}

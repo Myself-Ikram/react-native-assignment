@@ -8,16 +8,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import MaterialCIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SERVER} from '../../config';
 import {StackParamList} from '../navigation/navigation';
+import Context from '../state_management/context';
 
 type RootScreenProps = NativeStackScreenProps<StackParamList, 'Login'>;
 
 const Login: FC<RootScreenProps> = ({navigation}) => {
+  const {onLoad} = useContext(Context);
   const [cred, setCred] = useState({
     email: '',
     password: '',
@@ -42,6 +44,7 @@ const Login: FC<RootScreenProps> = ({navigation}) => {
       .then(async data => {
         if (data?.token) {
           await AsyncStorage.setItem('token', data?.token);
+          onLoad();
           navigation.replace('Home');
         } else {
           Alert.alert('Invalid Credentials!');
