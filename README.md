@@ -15,7 +15,7 @@
    (Android)
     ```bash
     npx react-native run-android
-   (IOS)
+5. (IOS)
      ```bash
     npx react-native run-ios
 ### Folder Structure
