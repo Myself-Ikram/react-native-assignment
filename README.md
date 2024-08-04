@@ -19,6 +19,7 @@
      ```bash
     npx react-native run-ios
 ### Folder Structure
+ ```bash
 ├── src
 │   ├── assets          # Image and other asset files
 │   ├── navigation      # Navigation configuration
