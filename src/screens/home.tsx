@@ -22,6 +22,11 @@ const Home: FC<RootScreenProps> = ({navigation}) => {
       </TouchableOpacity>
       <TouchableOpacity
         className="border border-orange-300 rounded p-3 w-1/2"
+        onPress={() => navigation.navigate('Quiz')}>
+        <Text className=" text-orange-300">Quiz</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        className="border border-orange-300 rounded p-3 w-1/2"
         onPress={async () => {
           await AsyncStorage.removeItem('token');
           navigation.replace('Root');
