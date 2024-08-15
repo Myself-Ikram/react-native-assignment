@@ -17,7 +17,7 @@ import Context from '../state_management/context';
 
 type RootScreenProps = NativeStackScreenProps<StackParamList, 'Products'>;
 
-type Product = {
+export type Product = {
   name: string;
   description: string;
   imageUrl: string;
