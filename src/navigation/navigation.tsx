@@ -7,6 +7,7 @@ import Products from '../screens/products';
 import Profile from '../screens/profile';
 import Home from '../screens/home';
 import Quiz from '../screens/quiz';
+import Result from '../screens/result';
 
 // Navigations and there types
 export type StackParamList = {
@@ -16,6 +17,13 @@ export type StackParamList = {
   Products: undefined;
   Profile: undefined;
   Quiz: undefined;
+  Result: {
+    total_marks: number;
+    my_marks: number;
+    correct: number;
+    incorrect: number;
+    skipped: number;
+  };
 };
 
 const Navigations = () => {
@@ -29,6 +37,7 @@ const Navigations = () => {
         <Stack.Screen name="Profile" component={Profile} />
         <Stack.Screen name="Products" component={Products} />
         <Stack.Screen name="Quiz" component={Quiz} />
+        <Stack.Screen name="Result" component={Result} />
       </Stack.Navigator>
     </NavigationContainer>
   );

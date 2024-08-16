@@ -31,13 +31,13 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
   const [selected, setSelected] = useState<
     {id: number; key: string} | undefined
   >();
-  const [result, setResult] = useState<{
-    total_marks: number;
-    my_marks: number;
-    correct: number;
-    incorrect: number;
-    skipped: number;
-  }>();
+  const [result, setResult] = useState({
+    total_marks: 0,
+    my_marks: 0,
+    correct: 0,
+    incorrect: 0,
+    skipped: 0,
+  });
   const getQuestions = async () => {
     await fetch(`${SERVER}/api/questions`, {
       method: 'GET',
@@ -60,9 +60,57 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
 
   //Answer Submit
   const calculateMarks = () => {
-    console.log('hello');
-  };
+    if (selected && questions) {
+      const obj: Question = questions[currentQuestion];
+      const answerOption: string = `answer_${
+        selected?.key?.split('')?.reverse()[0]
+      }`;
 
+      // @ts-ignore
+      if (obj[answerOption]) {
+        setResult({
+          ...result,
+          my_marks: result?.my_marks + obj?.correct_mark,
+          correct: result?.correct + 1,
+          total_marks: result?.total_marks + obj?.correct_mark,
+        });
+      } else {
+        setResult({
+          ...result,
+          my_marks: result?.my_marks + obj?.incorrect_mark,
+          incorrect: result?.incorrect + 1,
+          total_marks: result?.total_marks + obj?.correct_mark,
+        });
+      }
+      setSelected(undefined);
+      if (currentQuestion < questions?.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      }
+    }
+    if (questions && currentQuestion === questions?.length - 1) {
+      navigation.replace('Result', result);
+    }
+  };
+  //Skip btn
+  const handleSkip = () => {
+    setSelected(undefined);
+    if (questions) {
+      const obj: Question = questions[currentQuestion];
+      setResult({
+        ...result,
+        my_marks: result?.my_marks + obj?.question_skipped_mark,
+        skipped: result?.skipped + 1,
+        total_marks: result?.total_marks + obj?.correct_mark,
+      });
+
+      if (currentQuestion < questions?.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+      }
+    }
+    if (questions && currentQuestion === questions?.length - 1) {
+      navigation.replace('Result', result);
+    }
+  };
   return (
     <View className="flex-1 justify-between">
       {/* Set1 */}
@@ -124,14 +172,7 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
       <View className="mx-5 mb-10 flex-row justify-between">
         {questions && (
           <>
-            <TouchableOpacity
-              className=" p-5"
-              onPress={() => {
-                setSelected(undefined);
-                if (currentQuestion !== questions?.length - 1) {
-                  setCurrentQuestion(currentQuestion + 1);
-                }
-              }}>
+            <TouchableOpacity className=" p-5" onPress={handleSkip}>
               <Text className="text-black">Skip Question</Text>
             </TouchableOpacity>
 
@@ -140,12 +181,7 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
                 !selected && 'opacity-75'
               }`}
               disabled={!selected}
-              onPress={() => {
-                setSelected(undefined);
-                if (currentQuestion !== questions?.length - 1) {
-                  setCurrentQuestion(currentQuestion + 1);
-                }
-              }}>
+              onPress={calculateMarks}>
               <Text className="text-white">
                 {currentQuestion !== questions?.length - 1
                   ? 'Next Question'
