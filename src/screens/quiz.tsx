@@ -60,81 +60,83 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
 
   //Answer Submit
   const calculateMarks = () => {
+    let updatedResult: any;
     if (selected && questions) {
       const obj: Question = questions[currentQuestion];
       const answerOption: string = `answer_${
         selected?.key?.split('')?.reverse()[0]
       }`;
-
       // @ts-ignore
       if (obj[answerOption]) {
-        setResult({
+        updatedResult = {
           ...result,
           my_marks: result?.my_marks + obj?.correct_mark,
           correct: result?.correct + 1,
           total_marks: result?.total_marks + obj?.correct_mark,
-        });
+        };
       } else {
-        setResult({
+        updatedResult = {
           ...result,
           my_marks: result?.my_marks + obj?.incorrect_mark,
           incorrect: result?.incorrect + 1,
           total_marks: result?.total_marks + obj?.correct_mark,
-        });
+        };
       }
+      setResult(updatedResult);
       setSelected(undefined);
       if (currentQuestion < questions?.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
+      } else if (currentQuestion === questions?.length - 1) {
+        navigation.replace('Result', updatedResult);
       }
-    }
-    if (questions && currentQuestion === questions?.length - 1) {
-      navigation.replace('Result', result);
     }
   };
   //Skip btn
   const handleSkip = () => {
+    let updatedResult: any;
     setSelected(undefined);
     if (questions) {
       const obj: Question = questions[currentQuestion];
-      setResult({
+      updatedResult = {
         ...result,
         my_marks: result?.my_marks + obj?.question_skipped_mark,
         skipped: result?.skipped + 1,
         total_marks: result?.total_marks + obj?.correct_mark,
-      });
-
+      };
+      setResult(updatedResult);
       if (currentQuestion < questions?.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
       }
-    }
-    if (questions && currentQuestion === questions?.length - 1) {
-      navigation.replace('Result', result);
+      if (currentQuestion === questions?.length - 1) {
+        navigation.replace('Result', updatedResult);
+      }
     }
   };
+
   return (
     <View className="flex-1 justify-between">
       {/* Set1 */}
-      <View>
+      <View className="flex-1">
         {/* Timer */}
         <View className="items-center p-5">
-          <Text className=" text-sm">Remaining Time</Text>
+          <Text className=" text-xs">Remaining Time</Text>
           <Text className="text-lg text-red-400">00:85:29</Text>
         </View>
         {/* Question Layout */}
         {questions ? (
-          <View className="">
-            <View className="bg-white m-5 p-5 rounded" style={{elevation: 5}}>
+          <View>
+            <View
+              className="bg-white m-5 p-5 rounded border border-red-300"
+              style={{elevation: 5}}>
               {/* Question */}
               <View className="items-center p-3">
                 <Text className="text-xs text-black">
                   Question {currentQuestion + 1} of {questions?.length}
                 </Text>
-                <Text className="text-lg font-bold  text-black">
+                <Text className="text-lg font-bold text-red-400 text-center">
                   {questions[currentQuestion]?.question}
                 </Text>
-                <View className="mb-3">
-                  <Text className="text-black">--------------</Text>
-                </View>
+                <View className="mb-3 border-b border-red-400 w-40 my-5"></View>
               </View>
               {/* Options */}
               <View className="gap-5">
@@ -145,6 +147,7 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
                     const letters = ['A', 'B', 'C', 'D', 'E'];
                     return (
                       <TouchableOpacity
+                        key={idx}
                         className={`p-3 rounded-xl ${
                           selected?.key === key
                             ? ' bg-red-300'
@@ -163,8 +166,12 @@ const Quiz: FC<QuizScreenProps> = ({navigation}) => {
             </View>
           </View>
         ) : (
-          <View>
-            <Text>Hello</Text>
+          <View className="flex-1 justify-center items-center">
+            <View
+              className=" bg-red-400 h-32 w-3/4 rounded items-center justify-center"
+              style={{elevation: 5}}>
+              <Text className="text-white text-lg font-bold">Loading!</Text>
+            </View>
           </View>
         )}
       </View>
